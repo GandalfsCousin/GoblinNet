@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic -std=gnu99 -pthread
+CFLAGS=-Wall -Wextra -pedantic -std=gnu99 -pthread -Iinclude
 DEBUG=-g
 
 TARGET_NAME := goblinnet
@@ -8,15 +8,16 @@ BUILD_DIR   := build
 BIN_DIR     := bin
 
 TARGET := $(BIN_DIR)/$(TARGET_NAME)
-OBJ    := $(BUILD_DIR)/goblinnet.o
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 .DEFAULT_GOAL := $(TARGET)
 .PHONY: debug clean
 
-$(TARGET): $(OBJ) $(RES) | $(BIN_DIR)
+$(TARGET): $(OBJS) | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(OBJ): $(SRC_DIR)/main.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR):
@@ -25,9 +26,8 @@ $(BUILD_DIR):
 $(BIN_DIR):
 	mkdir -p $@
 
-	
 debug: CFLAGS += $(DEBUG)
 debug: $(TARGET)
 
 clean:
-	rm $(BUILD_DIR) rm $(BIN_DIR)
+	rm -rf $(BUILD_DIR) $(BIN_DIR)

@@ -83,7 +83,7 @@ char* fetch_ip()
         if (tmp->ifa_addr && tmp->ifa_addr->sa_family == AF_INET)
         {
             struct sockaddr_in *pAddr = (struct sockaddr_in *)tmp->ifa_addr;
-            if (strcmp(tmp->ifa_name, "eht0")) {
+            if (strcmp(tmp->ifa_name, "eth0") == 0) {
                 publicIP = inet_ntoa(pAddr->sin_addr);
             }
         }

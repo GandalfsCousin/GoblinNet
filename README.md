@@ -7,3 +7,11 @@ csmit863 cogitatio:
 - Propositum Latine scribendi est discere: linguam Latinam, codicis scribendi, architecturam programmatis, atque cogitationem criticam.
 - pulchrum videtur
 ![goblin](resources/goblinnet.jpg)
+
+Commands in program
+
+
+|  Command  |  Function  |
+| --------- | ---------- |
+| -help     | Prints all commands|
+| -message \[IP\] \[Contents\] | Attempts to send message to IP |

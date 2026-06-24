@@ -19,9 +19,11 @@
 #include <semaphore.h>
 #include <signal.h>
 #include <ifaddrs.h>
+#include <stdbool.h>
 
 // Goblin net imports
 #include "error.h"
+#include "connection.h"
 
 // Prototypes 
 //* Tmp, will move to other files later most likely, need a slim main
@@ -35,19 +37,30 @@ int main(int argc, char** argv)
     // Fetch port
     char* port = parse_cli(argc, argv);
     fprintf(stdout, "Welcome to Goblin Net\n");
+    int listeningPortFD = open_listening_port(port);
     char* pubIP = fetch_ip();
     fprintf(stdout, "You are connected to [%s:%s]\n", pubIP, port);
 
+    // Open thread to listen to incoming messages and print to stdout
+    //! not thread yet just static for testing
+    process_connections(listeningPortFD);
+
+    // Loop waiting for input from user, then send over port
+    while (true){
+
+    }
+    
+    // TODO: Clean up
     return EXIT_OK;
 }
 
 
 /**
  * Given CLI args check validity and call erros
- * ? "goblinnet --port portnum"
+ * ? "goblinnet [portnum]"
  * @param argc number of arguments in command line
  * @param argv vector of string pointers for command arguments
- * @returns Port forwarded port to listn on
+ * @returns Port forwarded port to listen on
  */
 char* parse_cli(int argc, char** argv)
 {
@@ -60,7 +73,7 @@ char* parse_cli(int argc, char** argv)
         exit_usage_error();
     }
 
-    // Check is a number
+    // TODO: Check if is a number
   
 
     return argv[1];
@@ -69,6 +82,7 @@ char* parse_cli(int argc, char** argv)
 
 /**
  * Simple function to grab users IP for connections
+ * * MOVE OUT OF MAIN LATER maybe?
  * @returns Public IP of the user
  */
 char* fetch_ip()
@@ -80,6 +94,7 @@ char* fetch_ip()
 
     while (tmp) 
     {
+        // Find public address
         if (tmp->ifa_addr && tmp->ifa_addr->sa_family == AF_INET)
         {
             struct sockaddr_in *pAddr = (struct sockaddr_in *)tmp->ifa_addr;
@@ -89,8 +104,6 @@ char* fetch_ip()
         }
         tmp = tmp->ifa_next;
     }
-
     freeifaddrs(addrs);
-
     return publicIP;
 }

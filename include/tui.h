@@ -5,5 +5,6 @@
 #define TUI_H
 
 void display_loading_bar();
+void display_goblin();
 
 #endif

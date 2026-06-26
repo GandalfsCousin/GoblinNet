@@ -37,6 +37,7 @@ int main(int argc, char** argv)
     // Fetch port
     char* port = parse_cli(argc, argv);
     display_loading_bar();
+    display_goblin();
     fprintf(stdout, "Welcome to Goblin Net\n");
     int listeningPortFD = open_listening_port(port);
     char* pubIP = fetch_ip();

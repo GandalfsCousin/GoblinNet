@@ -24,6 +24,7 @@
 // Goblin net imports
 #include "error.h"
 #include "connection.h"
+#include "tui.h"
 
 // Prototypes 
 //* Tmp, will move to other files later most likely, need a slim main

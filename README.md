@@ -8,10 +8,22 @@ csmit863 cogitatio:
 - pulchrum videtur
 ![goblin](resources/goblinnet.jpg)
 
-Commands in program
+## Program Commands
 
+#### CLI:
+`goblinnet [--name <name>]`
 
-|  Command  |  Function  |
-| --------- | ---------- |
-| -help     | Prints all commands|
-| -message \[IP\] \[Contents\] | Attempts to send message to IP |
+#### Top level commands 
+| Command | Function |
+|---------|----------|
+| `help`  | Prints all commands. |
+| `host <port> [--name <name>] [--password <password>]` | Creates a chatroom.|
+| `join <ip> <port>` | Joins established chatroom.|
+| `exit` | Closes the program. |
+
+#### Chat level commands
+| Command | Function |
+|---------|----------|
+| `-help`  | Prints all commands. |
+| `-leave` | Leaves the current chat, if owner closes chatroom.|
+| `-users` | Prints all users currently in the chat, along with their IPs.|

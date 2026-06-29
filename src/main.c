@@ -26,60 +26,129 @@
 #include "connection.h"
 #include "tui.h"
 
+/// Struct holding all information related to the user
+typedef struct {
+    char* name;
+    char* port;
+} UserInfo;
+
+
 // Prototypes 
 //* Tmp, will move to other files later most likely, need a slim main
-char* parse_cli(int argc, char** argv);
+void goblinnet_controler(UserInfo* userInfo);
+void proccess_command(char* cmd);
+UserInfo* parse_cli(int argc, char** argv);
 char* fetch_ip();
-
-
 
 int main(int argc, char** argv)
 {
-    // Fetch port
-    char* port = parse_cli(argc, argv);
-    display_loading_bar();
-    display_goblin();
+    UserInfo* userInfo = parse_cli(argc, argv);
     fprintf(stdout, "Welcome to Goblin Net\n");
-    int listeningPortFD = open_listening_port(port);
-    char* pubIP = fetch_ip();
-    fprintf(stdout, "You are connected to [%s:%s]\n", pubIP, port);
-
+    goblinnet_controler(userInfo);
     // Open thread to listen to incoming messages and print to stdout
     //! not thread yet just static for testing
-    process_connections(listeningPortFD);
 
     // Loop waiting for input from user, then send over port
-    while (true){
 
-    }
-    
     // TODO: Clean up
     return EXIT_OK;
 }
 
+/**
+ * Conbtroller for non-chatroom interation
+ * @param userInfo Information struct
+ */
+void goblinnet_controler(UserInfo* userInfo) 
+{
+    while (true) {
+        // Get input
+        char input[256];
+        fprintf(stdout, "> ");
+
+        if (fgets(input, sizeof(input), stdin) != NULL) {
+            char* endPtr = strchr(input, '\n'); 
+            if (endPtr == NULL) {
+                // Not new line so buffer overun
+                fprintf(stdout, "Message is too long.\n");
+                fflush(stdout);
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF) { } // purge all stdin
+                continue;
+            } else {
+                // Replace new line to truncate input and proccess
+                *endPtr = '\0';
+                proccess_command(input);
+            }
+        } else {
+            // Some error, should be fine to reloop?
+            continue;
+        }
+    }
+}
+
 
 /**
- * Given CLI args check validity and call erros
- * ? "goblinnet [portnum]"
+ * processes the given chat command
+ * @param command 
+ */
+void proccess_command(char* cmd) 
+{
+    // tokenise command
+    char** cmdv = malloc(sizeof(char*));
+    char* token = strtok(cmd, " ");
+    int cmdc = 0;
+    while (token != NULL) {
+        cmdv = realloc(cmdv, sizeof(char*) * (cmdc+1));
+        cmdv[cmdc++] = token;
+        token = strtok(NULL, " ");
+    }
+    // cmdc & cmdv can be used for easy command parsing
+
+    if (strcmp(cmdv[0], "help") == 0) {
+        fprintf(stdout, "Commands:\n");
+        fprintf(stdout, "`host <port> [--name <name>] [--password <password>]`: Creates a chatroom.\n");
+        fprintf(stdout, "`join <ip> <port>`: Joins established chatroom.\n");
+        fprintf(stdout, "`exit`: exits the program.\n");
+    } else if (strcmp(cmdv[0], "exit") == 0) {
+        free(cmdv);
+        exit(0);
+    } else {
+        // bad
+        fprintf(stdout, "Please enter a valid command, or help for list of commands.\n");
+    }
+
+    free(cmdv);
+}
+
+
+/**
+ * Given CLI args check validity and creates UserInfo
+ * ? "goblinnet [--name <name>]"
  * @param argc number of arguments in command line
  * @param argv vector of string pointers for command arguments
- * @returns Port forwarded port to listen on
+ * @returns updated UserInfo with name if given
  */
-char* parse_cli(int argc, char** argv)
+UserInfo* parse_cli(int argc, char** argv)
 {
-    if (argc != 2) {
+    int MINAGRS = 1;
+    int MAXARGS = 3;
+    if (argc < MINAGRS || argc > MAXARGS){
+        // Too many or too few
         exit_usage_error();
     }
 
-    // Port is not empty
-    if (strcmp(argv[1], "") == 0) {
-        exit_usage_error();
+    UserInfo* userInfo = malloc(sizeof(UserInfo));
+
+    if (argc != 1) {
+        if (strcmp("--name", argv[1]) == 0 && argc == 3) {
+            userInfo->name = argv[2];
+        } else {
+            // gibberish command
+            exit_usage_error();
+        }
     }
 
-    // TODO: Check if is a number
-  
-
-    return argv[1];
+    return userInfo;
 }
 
 

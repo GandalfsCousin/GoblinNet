@@ -12,7 +12,7 @@
  */
 void exit_usage_error()
 {
-    fprintf(stderr, "Usage ./goblinnet [Port Number]\n");
+    fprintf(stderr, "Usage 'goblinnet [--name <name>]'\n");
     exit(EXIT_USAGE_ERROR);
 }
 

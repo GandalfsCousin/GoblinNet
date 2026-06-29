@@ -1,5 +1,5 @@
 /// @file tui.c
-/// @author Callum Smith
+/// @author Callum Smith, Alexnader Wallace
 /// Terminal UI components for Goblin Net
 
 // Source - https://stackoverflow.com/q/20947161

@@ -25,5 +25,6 @@ csmit863 cogitatio:
 | Command | Function |
 |---------|----------|
 | `-help`  | Prints all commands. |
-| `-leave` | Leaves the current chat, if owner closes chatroom.|
+| `-back`  | Returns to the main page without closing the chatroom.|
+| `-leave` | Leaves the current chat, if owner, then closes chatroom.|
 | `-users` | Prints all users currently in the chat, along with their IPs.|

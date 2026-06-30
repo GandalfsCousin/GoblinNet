@@ -98,6 +98,7 @@ UserInfo* parse_cli(int argc, char** argv)
     }
 
     UserInfo* userInfo = malloc(sizeof(UserInfo));
+    userInfo->name = "User";
 
     if (argc != 1) {
         if (strcmp("--name", argv[1]) == 0 && argc == 3) {

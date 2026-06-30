@@ -23,20 +23,13 @@
 
 // Goblin net imports
 #include "error.h"
-#include "connection.h"
+#include "chatroom.h"
+#include "commands.h"
 #include "tui.h"
-
-/// Struct holding all information related to the user
-typedef struct {
-    char* name;
-    char* port;
-} UserInfo;
-
 
 // Prototypes 
 //* Tmp, will move to other files later most likely, need a slim main
 void goblinnet_controler(UserInfo* userInfo);
-void proccess_command(char* cmd);
 UserInfo* parse_cli(int argc, char** argv);
 char* fetch_ip();
 
@@ -44,15 +37,14 @@ int main(int argc, char** argv)
 {
     UserInfo* userInfo = parse_cli(argc, argv);
     fprintf(stdout, "Welcome to Goblin Net\n");
+    // Should hold user for majorit of time 
     goblinnet_controler(userInfo);
-    // Open thread to listen to incoming messages and print to stdout
-    //! not thread yet just static for testing
 
-    // Loop waiting for input from user, then send over port
-
-    // TODO: Clean up
+    free(userInfo);
     return EXIT_OK;
 }
+
+//! Can optimise code below by parsing execute command pointer and concat both controllers
 
 /**
  * Conbtroller for non-chatroom interation
@@ -77,7 +69,7 @@ void goblinnet_controler(UserInfo* userInfo)
             } else {
                 // Replace new line to truncate input and proccess
                 *endPtr = '\0';
-                proccess_command(input);
+                proccess_command(input, userInfo);
             }
         } else {
             // Some error, should be fine to reloop?
@@ -87,38 +79,6 @@ void goblinnet_controler(UserInfo* userInfo)
 }
 
 
-/**
- * processes the given chat command
- * @param command 
- */
-void proccess_command(char* cmd) 
-{
-    // tokenise command
-    char** cmdv = malloc(sizeof(char*));
-    char* token = strtok(cmd, " ");
-    int cmdc = 0;
-    while (token != NULL) {
-        cmdv = realloc(cmdv, sizeof(char*) * (cmdc+1));
-        cmdv[cmdc++] = token;
-        token = strtok(NULL, " ");
-    }
-    // cmdc & cmdv can be used for easy command parsing
-
-    if (strcmp(cmdv[0], "help") == 0) {
-        fprintf(stdout, "Commands:\n");
-        fprintf(stdout, "`host <port> [--name <name>] [--password <password>]`: Creates a chatroom.\n");
-        fprintf(stdout, "`join <ip> <port>`: Joins established chatroom.\n");
-        fprintf(stdout, "`exit`: exits the program.\n");
-    } else if (strcmp(cmdv[0], "exit") == 0) {
-        free(cmdv);
-        exit(0);
-    } else {
-        // bad
-        fprintf(stdout, "Please enter a valid command, or help for list of commands.\n");
-    }
-
-    free(cmdv);
-}
 
 
 /**

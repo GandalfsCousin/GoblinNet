@@ -1,9 +1,43 @@
-/// @file connection.c
+/// @file chatroom.c
 /// @author Alexander Wallace
 /// Holds all socket connections and related functions for 
 
-#include "connection.h"
+#include "chatroom.h"
 
+
+/**
+ * Conbtroller for non-chatroom interation
+ * @param userInfo Information struct
+ */
+void chatroom_controler(UserInfo* userInfo)
+{
+    while (true) {
+        // Get input
+        char input[256];
+        fprintf(stdout, "[%s] ", userInfo->name);
+
+        if (fgets(input, sizeof(input), stdin) != NULL) {
+            char* endPtr = strchr(input, '\n'); 
+            if (endPtr == NULL) {
+                // Not new line so buffer overun
+                fprintf(stdout, "Message is too long.\n");
+                fflush(stdout);
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF) { } // purge all stdin
+                continue;
+            } else {
+                // Replace new line to truncate input 
+                *endPtr = '\0';
+                
+                // TODO: This is where to call sending to chatroom memebers
+                // * BOTH CLIENT AND HOST
+            }
+        } else {
+            // Some error, should be fine to reloop?
+            continue;
+        }
+    }
+}
 
 /**
  * Controler function for opening and listening to specified port
@@ -57,9 +91,13 @@ int open_listening_port(char* port)
 }
 
 
-// Note - string is not null terminated - we need the length also.
+/**
+ * Main thread function to listen to Goblin Net Port for messages
+ * @param arg MUST pass in ThreadData*
+ */
 void process_connections(int fdServer)
 {
+    // TODO make this a thread function
     int fd;
     struct sockaddr_in fromAddr;
     socklen_t fromAddrSize;

@@ -30,6 +30,8 @@ void proccess_command(char* cmd, UserInfo* userInfo)
         exit(0);
     } else if (strcmp(cmdv[0], "host") == 0) {
         command_host(cmdc, cmdv, userInfo);
+    } else if (strcmp(cmdv[0], "join") == 0) {
+        connect_to_server();
     } else {
         // bad
         fprintf(stdout, "Please enter a valid command, or help for list of commands.\n");

@@ -35,8 +35,18 @@ typedef struct {
 
 /// Struct holding all information related to the user
 typedef struct {
+    int* conFds;
+    int conFdc;
+    char* name;
+    char* password;
+} ChatRoomInfo;
+
+
+/// Struct holding all information related to the user
+typedef struct {
     char* name;
     char* port;
+    ChatRoomInfo chatRoomInfo;
 } UserInfo;
 
 /// prototypes

@@ -180,7 +180,7 @@ void* listen_for_messages(void* arg)
  * If cannot connect, exit with exit_connection_error
  * @param port Port of the server to connent to
  * @param ip IP of the server to connect to
- * @returns file descriptor of server connection file
+ * @returns file descriptor of server connection file, or -1 if error
  */
 int connect_to_server(char* ip, char* port)
 {
@@ -194,15 +194,15 @@ int connect_to_server(char* ip, char* port)
     if ((err = getaddrinfo(ip, port, &hints, &ai))) {
         // Could not find server
         freeaddrinfo(ai);
-        exit_connection_error();
+        return -1;
     }
 
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if (connect(fd, ai->ai_addr, sizeof(struct sockaddr))) {
         // Could not connect
         close(fd);
-        freeaddrinfo(ai); // Exit so free
-        exit_connection_error();
+        freeaddrinfo(ai);
+        return -1;
     }
 
     freeaddrinfo(ai); //? Shoudl'nt need anymore?

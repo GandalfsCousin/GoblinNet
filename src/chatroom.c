@@ -168,3 +168,43 @@ void* listen_for_messages(void* arg)
     close(fd);
     return NULL;
 }
+
+
+
+
+//======================= JOIN =======================
+
+
+/**
+ * Connects to local host server on port number given
+ * If cannot connect, exit with exit_connection_error
+ * @param port Port of the server to connent to
+ * @param ip IP of the server to connect to
+ * @returns file descriptor of server connection file
+ */
+int connect_to_server(char* ip, char* port)
+{
+    struct addrinfo* ai = 0;
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_INET; // IPv4
+    hints.ai_socktype = SOCK_STREAM;
+
+    int err;
+    if ((err = getaddrinfo(ip, port, &hints, &ai))) {
+        // Could not find server
+        freeaddrinfo(ai);
+        exit_connection_error();
+    }
+
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (connect(fd, ai->ai_addr, sizeof(struct sockaddr))) {
+        // Could not connect
+        close(fd);
+        freeaddrinfo(ai); // Exit so free
+        exit_connection_error();
+    }
+
+    freeaddrinfo(ai); //? Shoudl'nt need anymore?
+    return fd;
+}

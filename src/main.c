@@ -36,6 +36,7 @@ char* fetch_ip();
 int main(int argc, char** argv)
 {
     UserInfo* userInfo = parse_cli(argc, argv);
+    display_goblin();
     fprintf(stdout, "Welcome to Goblin Net\n");
     // Should hold user for majorit of time 
     goblinnet_controler(userInfo);

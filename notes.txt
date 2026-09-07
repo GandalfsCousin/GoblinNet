@@ -1,0 +1,11 @@
+want to have an encrypted blob which represents the latest state of goblinnet
+chat network, can be shared and updated by anyone as long as they have the
+right authorization/key. Do not want any sort of intermediary server.
+
+in order to do this, will likely need to access some MPC techniques.
+
+https://en.wikipedia.org/wiki/Threshold_cryptosystem
+https://github.com/zama-ai/fhevm
+https://en.wikipedia.org/wiki/Secure_multi-party_computation
+https://notes.0xparc.org/research/multiparty/
+
